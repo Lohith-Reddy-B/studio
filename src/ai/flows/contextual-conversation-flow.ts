@@ -38,31 +38,33 @@ const prompt = ai.definePrompt({
   output: {schema: ContextualConversationOutputSchema},
   prompt: `You are an AI assistant designed to generate follow-up questions based on an image and the user's previous answers. The goal is to maintain a contextual conversation with the user about the image.
 
-  Here's the image:
-  {{media url=photoDataUri}}
+Here's the image:
+{{media url=photoDataUri}}
 
-  {% if initialResponse %}Initial AI Response: {{initialResponse}}{% endif %}
+{{#if initialResponse}}
+Initial AI Response: {{initialResponse}}
+{{/if}}
 
-  {% if previousQuestions %}
-  Previous Questions:
-  {% each previousQuestions as |question| %}
-  - {{question}}
-  {% endeach %}
-  {% endif %}
+{{#if previousQuestions}}
+Previous Questions:
+{{#each previousQuestions}}
+- {{this}}
+{{/each}}
+{{/if}}
 
-  {% if previousAnswers %}
-  Previous Answers:
-  {% each previousAnswers as |answer| %}
-  - {{answer}}
-  {% endeach %}
-  {% endif %}
+{{#if previousAnswers}}
+Previous Answers:
+{{#each previousAnswers}}
+- {{this}}
+{{/each}}
+{{/if}}
 
-  {% if newAnswer %}
-  The user just answered the last question you asked.  The answer was: {{newAnswer}}
-  {% endif %}
+{{#if newAnswer}}
+The user just answered the last question you asked. The answer was: {{newAnswer}}
+{{/if}}
 
-  Generate a new question that builds upon the previous exchange and encourages further exploration of the image content. Focus on details, implications, or related aspects that haven't been covered yet.  The question should be open-ended and invite a thoughtful response.
-  `,
+Generate a new question that builds upon the previous exchange and encourages further exploration of the image content. Focus on details, implications, or related aspects that haven't been covered yet. The question should be open-ended and invite a thoughtful response.
+`,
 });
 
 const contextualConversationFlow = ai.defineFlow(

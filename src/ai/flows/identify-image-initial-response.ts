@@ -43,10 +43,10 @@ const prompt = ai.definePrompt({
   output: {
     schema: IdentifyImageContentAndGenerateInitialResponseOutputSchema,
   },
-  prompt: `You are an AI that identifies the content of an image and generates a relevant initial response. Analyze the image and provide a description of what is shown in the image.  Use the following image as the primary source of information.
+  prompt: `You are an AI that identifies the content of an image and generates a relevant initial response. Analyze the image and provide a description of what is shown in the image. Use the following image as the primary source of information.
 
-  Image: {{media url=photoDataUri}}
-  `,
+Image: {{media url=photoDataUri}}
+`,
 });
 
 const identifyImageContentAndGenerateInitialResponseFlow = ai.defineFlow(
@@ -56,7 +56,16 @@ const identifyImageContentAndGenerateInitialResponseFlow = ai.defineFlow(
     outputSchema: IdentifyImageContentAndGenerateInitialResponseOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const llmResponse = await ai.generate({
+      model: 'googleai/gemini-1.5-flash',
+      prompt: `You are an AI that identifies the content of an image and generates a relevant initial response. Analyze the image and provide a description of what is shown in the image. Use the following image as the primary source of information.
+
+Image: {{media url=photoDataUri}}
+`,
+      config: {
+        temperature: 0.3,
+      },
+    });
+    return { identification: llmResponse.text };
   }
 );
